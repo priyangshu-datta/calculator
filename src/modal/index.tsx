@@ -1,11 +1,10 @@
-import { Component, Show } from "solid-js";
+import { Component, Show, For } from "solid-js";
 import { setState } from "../store/modal";
 import { history } from "../store/history";
 import { setExpression } from "../store/current";
 import { setPrevious } from "../store/previous";
 
 const index: Component = () => {
-    // bg-[#606c9042]
     return (
         <div
             class="absolute inset-0 bg-[#606c9042] grid place-items-center cursor-alias z-20"
@@ -24,8 +23,8 @@ const index: Component = () => {
                             </span>
                         }
                     >
-                        {history().map((h) => {
-                            return (
+                        <For each={history()}>
+                            {(h) => (
                                 <div
                                     class="grid grid-cols-3 cursor-pointer"
                                     onClick={() => {
@@ -44,8 +43,8 @@ const index: Component = () => {
                                         {h.result}
                                     </div>
                                 </div>
-                            );
-                        })}
+                            )}
+                        </For>
                     </Show>
                 </div>
                 <button

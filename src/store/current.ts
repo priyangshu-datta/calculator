@@ -98,6 +98,13 @@ const updateExpression = (btn_name: string | null) => {
                 result: response.result,
             },
         ]);
+        /* Infinity to ∞ */
+        if (response.result.toLowerCase() === "infinity") {
+            response = {
+                error: response.error,
+                result: "∞",
+            };
+        }
         setExpression(response.result);
     }
 };

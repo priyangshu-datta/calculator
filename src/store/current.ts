@@ -65,13 +65,22 @@ const updateExpression = (btn_name: string | null) => {
             if (err.some((er) => er.code !== ERROR.bracket_error)) return;
         }
         if (
-            previous().includes("=") &&
-            expression().match(/^\d+(\.\d+)?$/g) &&
+            previous().includes("=") && !previous().includes("Ans=") &&
+            expression().match(/^(\d+(\.\d+)?|∞)$/g) &&
             "1234567890.".includes(btn_name)
-        ) {
+        ) {// reset the espression
             setPrevious(() => `Ans=${expression()}`);
-            setExpression(() => `${btn_name}`);
-        } else setExpression((prev) => `${prev}${btn_name}`);
+            btn_name === "." && expression() === "∞"
+                ? setExpression(() => `0${btn_name}`)
+                : setExpression(() => `${btn_name}`);
+        } else {
+            if (
+                btn_name === "." &&
+                "+*-/".split("").includes(expression().slice(-1))
+            ) {
+                setExpression((prev) => `${prev}0${btn_name}`);
+            } else setExpression((prev) => `${prev}${btn_name}`);
+        }
         var x = document.querySelector("[data-value='AC']");
         if (x !== null) {
             x.innerHTML = "CE";
@@ -79,6 +88,11 @@ const updateExpression = (btn_name: string | null) => {
     }
     if (btn_name === "=") {
         let err = parser(`${expression()}${btn_name}`);
+        if (expression().includes("∞")) {
+            setPrevious(() => "Ans=∞");
+            setExpression(() => "∞");
+            return;
+        }
         for (let i = 0; i < err.length; i++) {
             let er = err[i];
             if (er.code === ERROR.bracket_error) {
